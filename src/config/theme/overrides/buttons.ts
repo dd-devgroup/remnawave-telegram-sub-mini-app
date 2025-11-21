@@ -11,7 +11,7 @@ export default {
     }),
     Button: Button.extend({
         defaultProps: {
-            radius: 'xl',
+            radius: 'xs',
             variant: 'filled',
             color: 'sunset',
             size: 'md',
@@ -19,7 +19,7 @@ export default {
         },
         styles: {
             root: {
-                border: 'none',
+                border: '1px solid #EAD5B2',
                 boxShadow: '0 12px 28px rgba(0, 0, 0, 0.06)',
                 paddingInline: '1.4rem',
                 transition: 'transform 120ms ease, box-shadow 120ms ease',
