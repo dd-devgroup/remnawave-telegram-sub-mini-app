@@ -1,21 +1,22 @@
-import {Link} from "@/components/Link/Link";
+import { Link } from '@/components/Link/Link'
 
 require('dotenv').config()
 
-import { useEffect, useLayoutEffect, useState } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
+import { useEffect, useLayoutEffect, useState } from 'react'
 
 import { Box, Button, Group, Select, Text } from '@mantine/core'
 import { useOs } from '@mantine/hooks'
 import {
     IconBrandAndroid,
-    IconBrandApple, IconBrandWindows,
+    IconBrandApple,
+    IconBrandWindows,
     IconDeviceDesktop,
     IconExternalLink
 } from '@tabler/icons-react'
 
-import {IAppConfig, ISubscriptionPageAppConfig, TEnabledLocales, TPlatform} from '@/types/appList'
 import { BaseInstallationGuideWidget } from '@/components/BaseInstallationGuideWidget/BaseInstallationGuideWidget'
+import { IAppConfig, ISubscriptionPageAppConfig, TEnabledLocales, TPlatform } from '@/types/appList'
 import { GetSubscriptionInfoByShortUuidCommand } from '@remnawave/backend-contract'
 
 export const InstallationGuideWidget = ({
@@ -43,33 +44,29 @@ export const InstallationGuideWidget = ({
     // Otherwise use the full appsConfig
     const filteredConfig = isCryptoLinkEnabled
         ? {
-        ...appsConfig,
+              ...appsConfig,
               ios: appsConfig.ios.filter((app) => app.urlScheme.startsWith('happ')),
               android: appsConfig.android.filter((app) => app.urlScheme.startsWith('happ')),
               pc: appsConfig.windows.filter((app) => app.urlScheme.startsWith('happ')),
               macos: appsConfig.macos.filter((app) => app.urlScheme.startsWith('happ')),
               linux: appsConfig.windows.filter((app) => app.urlScheme.startsWith('happ'))
-
-        }
+          }
         : appsConfig
 
     useEffect(() => {
         if (lang) {
-
-        if (lang.startsWith('en')) {
-            setCurrentLang('en')
-        } else if (lang.startsWith('fa') && enabledLocales.includes('fa')) {
-            setCurrentLang('fa')
-        } else if (lang.startsWith('ru') && enabledLocales.includes('ru')) {
-            setCurrentLang('ru')
-        } else if (lang.startsWith('zh') && enabledLocales.includes('zh')) {
-            setCurrentLang('zh')
-        } else {
-            setCurrentLang('en')
+            if (lang.startsWith('en')) {
+                setCurrentLang('en')
+            } else if (lang.startsWith('fa') && enabledLocales.includes('fa')) {
+                setCurrentLang('fa')
+            } else if (lang.startsWith('ru') && enabledLocales.includes('ru')) {
+                setCurrentLang('ru')
+            } else if (lang.startsWith('zh') && enabledLocales.includes('zh')) {
+                setCurrentLang('zh')
+            } else {
+                setCurrentLang('en')
+            }
         }
-
-        }
-
     }, [lang])
 
     useLayoutEffect(() => {
@@ -107,7 +104,6 @@ export const InstallationGuideWidget = ({
         appleTV: appsConfig.appleTV && appsConfig.appleTV.length > 0
     }
 
-
     const { subscriptionUrl } = user
 
     const openDeepLink = (urlScheme: string, isNeedBase64Encoding: boolean | undefined) => {
@@ -117,12 +113,12 @@ export const InstallationGuideWidget = ({
             window.open(encodedUrl, '_blank')
         } else if (urlScheme.startsWith('happ') && isCryptoLinkEnabled) {
             // return os === 'windows' || os === 'linux' || os === 'macos'
-                return window.open(`${redirectLink}${user.happ.cryptoLink}`, '_blank')
-                // : window.open(user.happ.cryptoLink, '_blank')
+            return window.open(`${redirectLink}${user.happ.cryptoLink}`, '_blank')
+            // : window.open(user.happ.cryptoLink, '_blank')
         } else {
             // return os === 'windows' || os === 'linux' || os === 'macos'
-                return window.open(`${redirectLink}${urlScheme}${subscriptionUrl}`, '_blank')
-                // : window.open(`${urlScheme}${subscriptionUrl}`)
+            return window.open(`${redirectLink}${urlScheme}${subscriptionUrl}`, '_blank')
+            // : window.open(`${urlScheme}${subscriptionUrl}`)
         }
     }
 
@@ -199,7 +195,14 @@ export const InstallationGuideWidget = ({
                                 key={index}
                                 leftSection={<IconExternalLink size={16} />}
                                 target="_blank"
-                                variant="light"
+                                variant="outline"
+                                style={{
+                                    padding: '8px 12px',
+                                    height: 'auto',
+                                    lineHeight: 1.5,
+                                    minWidth: 0,
+                                    flex: '1 0 auto'
+                                }}
                             >
                                 {buttonText}
                             </Button>

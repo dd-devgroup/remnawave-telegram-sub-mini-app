@@ -35,11 +35,7 @@ body {
 }
 
 a {
-    color: var(--mantine-color-teal-6);
+    color: var(--mantine-color-dark);
     font-weight: 600;
     text-decoration: none;
-}
-
-a:hover {
-    color: var(--mantine-color-sunset-6);
 }

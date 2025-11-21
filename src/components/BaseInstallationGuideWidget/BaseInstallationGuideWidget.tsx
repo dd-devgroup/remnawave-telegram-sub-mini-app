@@ -219,10 +219,10 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
             )}
 
             {platformApps?.length > 0 ? (
-                <Timeline active={1} bulletSize={32} color="teal" lineWidth={2}>
+                <Timeline active={1} bulletSize={32} color="sunset" lineWidth={2}>
                     <Timeline.Item
                         bullet={
-                            <ThemeIcon color="teal.5" radius="xl" size={26}>
+                            <ThemeIcon color="sunset.5" radius="xl" size={26}>
                                 <IconDownload size={16} />
                             </ThemeIcon>
                         }
@@ -237,7 +237,7 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
                     {selectedApp && selectedApp.additionalBeforeAddSubscriptionStep && (
                         <Timeline.Item
                             bullet={
-                                <ThemeIcon color="teal.5" radius="xl" size={26}>
+                                <ThemeIcon color="sunset.5" radius="xl" size={26}>
                                     <IconInfoCircle size={20} />
                                 </ThemeIcon>
                             }
@@ -259,7 +259,7 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
                                             href={button.buttonLink}
                                             key={index}
                                             target="_blank"
-                                            variant="light"
+                                            color="sunset"
                                         >
                                             {getButtonText(button)}
                                         </Button>
@@ -271,7 +271,7 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
 
                     <Timeline.Item
                         bullet={
-                            <ThemeIcon color="teal.5" radius="xl" size={26}>
+                            <ThemeIcon color="sunset.5" radius="xl" size={26}>
                                 <IconCloudDownload size={16} />
                             </ThemeIcon>
                         }
@@ -300,7 +300,7 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
                     {selectedApp && selectedApp.additionalAfterAddSubscriptionStep && (
                         <Timeline.Item
                             bullet={
-                                <ThemeIcon color="teal.5" radius="xl" size={26}>
+                                <ThemeIcon color="sunset.5" radius="xl" size={26}>
                                     <IconStar size={16} />
                                 </ThemeIcon>
                             }
@@ -334,7 +334,7 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
 
                     <Timeline.Item
                         bullet={
-                            <ThemeIcon color="teal.5" radius="xl" size={26}>
+                            <ThemeIcon color="sunset.5" radius="xl" size={26}>
                                 <IconCheck size={16} />
                             </ThemeIcon>
                         }
