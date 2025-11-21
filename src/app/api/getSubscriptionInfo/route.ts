@@ -2,14 +2,18 @@ import {
     GetSubscriptionInfoByShortUuidCommand,
     GetUserByTelegramIdCommand
 } from '@remnawave/backend-contract'
+import { isValid, parse } from '@telegram-apps/init-data-node'
 import axios, { AxiosError } from 'axios'
-import {consola} from "consola/browser";
-import { isValid, parse } from '@telegram-apps/init-data-node';
-
+import { consola } from 'consola/browser'
 
 const baseUrl = process.env.REMNAWAVE_PANEL_URL
 const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN!
 const isHappCryptoLinkEnabled = process.env.CRYPTO_LINK === 'true'
+const panelAccessKeyRaw = process.env.REMNAWAVE_PANEL_ACCESS_KEY?.trim()
+const [panelAccessKeyName, panelAccessKeyValue] = panelAccessKeyRaw
+    ? panelAccessKeyRaw.split('=', 2).map((part) => part.trim())
+    : []
+const resolvedPanelAccessValue = panelAccessKeyValue || panelAccessKeyName
 
 const instance = axios.create({
     baseURL: baseUrl,
@@ -17,6 +21,15 @@ const instance = axios.create({
         Authorization: `Bearer ${process.env.REMNAWAVE_TOKEN}`
     }
 })
+
+if (panelAccessKeyName && resolvedPanelAccessValue) {
+    instance.defaults.params = {
+        ...(instance.defaults.params || {}),
+        [panelAccessKeyName]: resolvedPanelAccessValue
+    }
+
+    instance.defaults.headers.common['Cookie'] = `${panelAccessKeyName}=${resolvedPanelAccessValue}`
+}
 
 if (baseUrl ? baseUrl.startsWith('http://') : false) {
     instance.defaults.headers.common['x-forwarded-for'] = '127.0.0.1'
@@ -28,18 +41,24 @@ if (process.env.AUTH_API_KEY) {
 }
 
 export async function POST(request: Request) {
-
     const parsedBody = await request.json()
     const initData = parsedBody.initData
 
-
     try {
+        const isDevelopment = process.env.NODE_ENV === 'development'
 
-        const isDataValid = isValid(initData, telegramBotToken);
-        if (!isDataValid) return new Response(JSON.stringify({ error: 'Invalid initData' }), { status: 400 });
+        const isDataValid = isValid(initData, telegramBotToken)
+        if (!isDataValid && !isDevelopment) {
+            return new Response(JSON.stringify({ error: 'Invalid initData' }), { status: 400 })
+        }
 
-        const { user } = parse(initData);
-        if (!user || !user.id) return new Response(JSON.stringify({ error: 'Invalid user data' }), { status: 400 });
+        if (!isDataValid && isDevelopment) {
+            consola.warn('Invalid initData, continuing because NODE_ENV=development')
+        }
+
+        const { user } = parse(initData)
+        if (!user || !user.id)
+            return new Response(JSON.stringify({ error: 'Invalid user data' }), { status: 400 })
 
         const result = await instance.request<GetUserByTelegramIdCommand.Response>({
             method: GetUserByTelegramIdCommand.endpointDetails.REQUEST_METHOD,

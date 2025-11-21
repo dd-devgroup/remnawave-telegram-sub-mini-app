@@ -1,26 +1,32 @@
 .control {
-    width: 150px;
+    width: 160px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
-    border-radius: var(--mantine-radius-md);
-    border: 1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6));
-    transition: background-color 150ms ease;
-    background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
+    padding: var(--mantine-spacing-xs) var(--mantine-spacing-lg);
+    border-radius: 999px;
+    border: 1px solid #d8cfbf;
+    transition: background-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+    background-color: #ffffff;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
 
     &[data-expanded] {
-        background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5));
+        background-color: #fff3e4;
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+        transform: translateY(-1px);
     }
 
     @mixin hover {
-        background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5));
+        background-color: #fff8ef;
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+        transform: translateY(-1px);
     }
 }
 
 .label {
-    font-weight: 500;
+    font-weight: 600;
     font-size: var(--mantine-font-size-sm);
+    color: #6a5a4a;
 }
 
 .icon {
