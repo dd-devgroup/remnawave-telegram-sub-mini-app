@@ -1,7 +1,5 @@
-import { useLocale, useTranslations } from 'next-intl'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import { Accordion, rgba, SimpleGrid, Stack, Text, ThemeIcon } from '@mantine/core'
+import { InfoBlock } from '@/components/InfoBlock/InfoBlock'
+import { Accordion, Group, rgba, SimpleGrid, Stack, Text, ThemeIcon } from '@mantine/core'
 import {
     IconAlertCircle,
     IconArrowsUpDown,
@@ -10,17 +8,26 @@ import {
     IconUser,
     IconX
 } from '@tabler/icons-react'
-import { InfoBlock } from '@/components/InfoBlock/InfoBlock'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { useLocale, useTranslations } from 'next-intl'
 
 import { calculateDaysLeft, getExpirationTextUtil } from '@/utils/utils'
 import { GetSubscriptionInfoByShortUuidCommand } from '@remnawave/backend-contract'
+import { SubscriptionLinkWidget } from '../SubQR/SubQR'
 
 dayjs.extend(relativeTime)
 
 export const SubscriptionInfoWidget = ({
-    user
+    user,
+    subscriptionUrl,
+    supportUrl,
+    isCryptoLinkEnabled
 }: {
     user: GetSubscriptionInfoByShortUuidCommand.Response['response']
+    subscriptionUrl: string
+    supportUrl?: string
+    isCryptoLinkEnabled: boolean
 }) => {
     const t = useTranslations()
     const lang = useLocale()
@@ -33,11 +40,7 @@ export const SubscriptionInfoWidget = ({
         return dayjs(dateStr).format('DD.MM.YYYY')
     }
 
-    const getStatusAndIcon = (): {
-        color: string
-        icon: React.ReactNode
-        status: string
-    } => {
+    const getStatusAndIcon = () => {
         if (user.user.userStatus === 'ACTIVE' && daysLeft > 0) {
             return {
                 color: 'teal',
@@ -45,6 +48,7 @@ export const SubscriptionInfoWidget = ({
                 status: t('subscription-info.widget.active')
             }
         }
+
         if (
             (user.user.userStatus === 'ACTIVE' && daysLeft === 0) ||
             (daysLeft >= 0 && daysLeft <= 3)
@@ -66,9 +70,7 @@ export const SubscriptionInfoWidget = ({
     return (
         <Accordion
             styles={(theme) => ({
-                item: {
-                    boxShadow: `0 4px 12px ${rgba(theme.colors.gray[5], 0.1)}`
-                }
+                item: { boxShadow: `0 4px 12px ${rgba(theme.colors.gray[5], 0.1)}` }
             })}
             variant="separated"
         >
@@ -80,15 +82,25 @@ export const SubscriptionInfoWidget = ({
                         </ThemeIcon>
                     }
                 >
-                    <Stack gap={3}>
-                        <Text fw={500} size="md" truncate>
-                            {user.user.username}
-                        </Text>
-                        <Text c={daysLeft === 0 ? 'red' : 'dimmed'} size="xs">
-                            {getExpirationTextUtil(user.user.expiresAt, t, lang)}
-                        </Text>
-                    </Stack>
+                    <Group justify="space-between" align="center" w="100%" pr="xs">
+                        <Stack gap={3} style={{ flex: 1 }}>
+                            <Text fw={500} size="md" truncate>
+                                {user.user.username}
+                            </Text>
+                            <Text c={daysLeft === 0 ? 'red' : 'dimmed'} size="xs">
+                                {getExpirationTextUtil(user.user.expiresAt, t, lang)}
+                            </Text>
+                        </Stack>
+
+                        {!isCryptoLinkEnabled && (
+                            <SubscriptionLinkWidget
+                                subscription={subscriptionUrl}
+                                supportUrl={supportUrl}
+                            />
+                        )}
+                    </Group>
                 </Accordion.Control>
+
                 <Accordion.Panel>
                     <SimpleGrid cols={{ base: 1, sm: 2, xs: 2 }} spacing="xs" verticalSpacing="sm">
                         <InfoBlock
@@ -121,17 +133,13 @@ export const SubscriptionInfoWidget = ({
                             title={t('subscription-info.widget.expires')}
                             value={(() => {
                                 if (!user.user.expiresAt) return '—'
-
-                                const fiftyYearsFromNow = new Date()
-                                fiftyYearsFromNow.setFullYear(fiftyYearsFromNow.getFullYear() + 50)
-
+                                const fiftyYears = new Date()
+                                fiftyYears.setFullYear(fiftyYears.getFullYear() + 50)
                                 const expireDate = new Date(user.user.expiresAt)
 
-                                if (expireDate > fiftyYearsFromNow) {
-                                    return '∞'
-                                } else {
-                                    return formatDate(user.user.expiresAt)
-                                }
+                                return expireDate > fiftyYears
+                                    ? '∞'
+                                    : formatDate(user.user.expiresAt)
                             })()}
                         />
 
@@ -140,9 +148,7 @@ export const SubscriptionInfoWidget = ({
                             icon={<IconArrowsUpDown size={20} />}
                             title={t('subscription-info.widget.bandwidth')}
                             value={`${user.user.trafficUsed} / ${
-                                user.user.trafficLimit === '0'
-                                    ? '∞'
-                                    : user.user.trafficLimit
+                                user.user.trafficLimit === '0' ? '∞' : user.user.trafficLimit
                             }`}
                         />
                     </SimpleGrid>
