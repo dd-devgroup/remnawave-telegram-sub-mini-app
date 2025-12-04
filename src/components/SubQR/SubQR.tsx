@@ -1,6 +1,3 @@
-import { ActionIcon, Button, Group, Image, Modal, Stack, Text } from '@mantine/core'
-import { useClipboard } from '@mantine/hooks'
-import { notifications } from '@mantine/notifications'
 import {
     IconBrandDiscord,
     IconBrandTelegram,
@@ -8,28 +5,26 @@ import {
     IconLink,
     IconMessageChatbot
 } from '@tabler/icons-react'
+import {ActionIcon, Button, Group, Image, Modal, Stack, Text} from '@mantine/core'
+import { notifications } from '@mantine/notifications'
+import { useClipboard } from '@mantine/hooks'
 import { renderSVG } from 'uqr'
 
-import { useTranslations } from 'next-intl'
-import { useState } from 'react'
+import {useTranslations} from "next-intl";
+import {useState} from "react";
 
-export const SubscriptionLinkWidget = ({
-    subscription,
-    supportUrl
-}: {
-    subscription: string
-    supportUrl?: string
-}) => {
-    const t = useTranslations()
+export const SubscriptionLinkWidget = ({subscription, supportUrl }: {subscription: string, supportUrl?: string }) => {
+    const t = useTranslations();
     const clipboard = useClipboard({ timeout: 10000 })
     const subscriptionQrCode = renderSVG(subscription, {
-        whiteColor: 'white',
-        blackColor: 'dark'
+        whiteColor: '#161B22',
+        blackColor: '#3CC9DB'
     })
 
     const [open, setOpen] = useState(false)
 
     if (!subscription) return null
+
 
     const handleCopy = () => {
         notifications.show({
@@ -71,26 +66,14 @@ export const SubscriptionLinkWidget = ({
     }
 
     return (
+
         <>
-            <Modal
-                opened={open}
-                onClose={() => setOpen(false)}
-                title={t('subscription-link.widget.get-link')}
-                closeOnClickOutside={false}
-                overlayProps={{
-                    onMouseDown: (e) => e.stopPropagation(),
-                    onClick: (e) => {
-                        e.stopPropagation()
-                        setOpen(false)
-                    }
-                }}
-            >
+
+            <Modal opened={open} onClose={()=> setOpen(false)} title={t('subscription-link.widget.get-link')}>
                 {subscriptionQrCode && (
                     <Stack align="center">
                         <Image
-                            src={`data:image/svg+xml;utf8,${encodeURIComponent(
-                                subscriptionQrCode
-                            )}`}
+                            src={`data:image/svg+xml;utf8,${encodeURIComponent(subscriptionQrCode)}`}
                         />
                         <Text fw={600} size="lg" ta="center">
                             {t('subscription-link.widget.scan-qr-code')}
@@ -104,25 +87,22 @@ export const SubscriptionLinkWidget = ({
                         </Button>
                     </Stack>
                 )}
+
             </Modal>
-            <Group
-                gap="xs"
-                onClick={(e) => e.stopPropagation()}
-                onMouseDown={(e) => e.stopPropagation()}
+        <Group gap="xs">
+            <ActionIcon
+                onClick={() => {
+                    setOpen(true)
+                }}
+                size="xl"
+                variant="default"
             >
-                <ActionIcon
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        setOpen(true)
-                    }}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    size="xl"
-                    variant="default"
-                >
-                    <IconLink />
-                </ActionIcon>
-                {supportUrl && renderSupportLink(supportUrl)}
-            </Group>
+                <IconLink />
+            </ActionIcon>
+            {supportUrl && renderSupportLink(supportUrl)}
+        </Group>
+
         </>
+
     )
 }
