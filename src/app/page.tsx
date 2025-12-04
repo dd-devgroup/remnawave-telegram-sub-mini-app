@@ -1,29 +1,31 @@
 'use client'
 
-import { fetchAppEnv } from '@/api/fetchAppEnv'
+import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
+import {Center, Container, Group, Stack, Title,Image} from '@mantine/core'
 import { fetchUserByTelegramId } from '@/api/fetchUserByTgId'
-import { ErrorConnection } from '@/components/ErrorConnection/ErrorConnection'
-import { InstallationGuideWidget } from '@/components/InstallationGuideWidget/InstallationGuideWidget'
+import { fetchAppEnv } from '@/api/fetchAppEnv'
+import {initData, retrieveLaunchParams, useSignal,initDataRaw as _initDataRaw,
+} from '@telegram-apps/sdk-react'
 import { Loading } from '@/components/Loading/Loading'
+import { ofetch } from 'ofetch'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher/LocaleSwitcher'
 import { SubscribeCta } from '@/components/SubscribeCTA/SubscribeCTA'
+import { ErrorConnection } from '@/components/ErrorConnection/ErrorConnection'
+import {SubscriptionLinkWidget} from '@/components/SubQR/SubQR'
 import { SubscriptionInfoWidget } from '@/components/SubscriptionInfoWidget/SubscriptionInfoWidget'
-import { Center, Container, Stack, Title } from '@mantine/core'
-import { initDataRaw as _initDataRaw, initData, useSignal } from '@telegram-apps/sdk-react'
-import { consola } from 'consola/browser'
-import { useTranslations } from 'next-intl'
-import { ofetch } from 'ofetch'
-import { useEffect, useState } from 'react'
+import { InstallationGuideWidget } from '@/components/InstallationGuideWidget/InstallationGuideWidget'
+import { consola } from "consola/browser";
 
-import { ISubscriptionPageAppConfig, TEnabledLocales } from '@/types/appList'
+import {ISubscriptionPageAppConfig, TEnabledLocales} from '@/types/appList'
 
-import { isOldFormat } from '@/utils/migrateConfig'
-import { GetSubscriptionInfoByShortUuidCommand } from '@remnawave/backend-contract'
 import classes from './app.module.css'
+import { GetSubscriptionInfoByShortUuidCommand } from '@remnawave/backend-contract'
+import {isOldFormat} from "@/utils/migrateConfig";
 
 export default function Home() {
     const t = useTranslations()
-    const initDataRaw = useSignal(_initDataRaw)
+    const initDataRaw = useSignal(_initDataRaw);
 
     const initDataState = useSignal(initData.state)
     const telegramId = initDataState?.user?.id
@@ -51,6 +53,7 @@ export default function Home() {
             )
         ]
     }
+
 
     const activeSubscription =
         subscription?.user?.userStatus && subscription?.user?.userStatus === 'ACTIVE'
@@ -81,6 +84,7 @@ export default function Home() {
                     if (user) {
                         setSubscription(user)
                     }
+
                 } catch (error) {
                     const errorMessage =
                         error instanceof Error ? error.message : 'Unknown error occurred'
@@ -148,11 +152,12 @@ export default function Home() {
                 <Center>
                     <Stack gap="xl">
                         <Title style={{ textAlign: 'center' }} order={4}>
-                            {errorConnect === 'ERR_FATCH_USER'
-                                ? t('main.page.component.error-connect')
-                                : errorConnect === 'ERR_PARSE_APPCONFIG'
-                                ? t('main.page.component.error-parse-appconfig')
-                                : JSON.stringify(errorConnect)}
+                            {errorConnect === 'ERR_FATCH_USER' ? (
+                                t('main.page.component.error-connect')
+                            ) : errorConnect === 'ERR_PARSE_APPCONFIG' ? (
+                                t('main.page.component.error-parse-appconfig')
+                            ) : (JSON.stringify(errorConnect))}
+
                         </Title>
                         <ErrorConnection />
                     </Stack>
@@ -180,14 +185,32 @@ export default function Home() {
         return (
             <Container my="xl" size="xl">
                 <Stack gap="xl">
-                    <Stack gap="xl">
-                        <SubscriptionInfoWidget
-                            user={subscription}
-                            subscriptionUrl={subscription.subscriptionUrl}
-                            supportUrl={appsConfig.config.branding?.supportUrl}
-                            isCryptoLinkEnabled={!!publicEnv?.cryptoLink}
-                        />
+                    <Group justify="space-between">
+                        <Group gap="xs">
+                            {appsConfig.config.branding?.logoUrl && (
+                                <Image
+                                    alt="logo"
+                                    fit="contain"
+                                    src={appsConfig.config.branding.logoUrl}
+                                    style={{
+                                        maxWidth: '36px',
+                                        maxHeight: '36px',
+                                        width: 'auto',
+                                        height: 'auto'
+                                    }}
+                                />
 
+                            )}
+                            <Title order={4}>{appsConfig.config.branding?.name || t('main.page.component.podpiska')}</Title>
+                        </Group>
+                        <Group gap="xs">
+                            {!publicEnv?.cryptoLink && (
+                                <SubscriptionLinkWidget subscription={subscription.subscriptionUrl} supportUrl={appsConfig.config.branding?.supportUrl} />
+                            )}
+                        </Group>
+                    </Group>
+                    <Stack gap="xl">
+                        <SubscriptionInfoWidget user={subscription} />
                         {activeSubscription ? (
                             <InstallationGuideWidget
                                 user={subscription}
