@@ -1,7 +1,5 @@
 import { Link } from '@/components/Link/Link'
 
-require('dotenv').config()
-
 import { useLocale, useTranslations } from 'next-intl'
 import { useEffect, useLayoutEffect, useState } from 'react'
 
@@ -107,18 +105,22 @@ export const InstallationGuideWidget = ({
     const { subscriptionUrl } = user
 
     const openDeepLink = (urlScheme: string, isNeedBase64Encoding: boolean | undefined) => {
+        const isDesktop = os === 'windows' || os === 'linux' || os === 'macos'
+        const defaultRedirect = process.env.REDIRECT_LINK
+        const redirectUrl = isDesktop ? redirectLink || defaultRedirect : ''
+
         if (isNeedBase64Encoding) {
             const encoded = btoa(`${subscriptionUrl}`)
             const encodedUrl = `${urlScheme}${encoded}`
             window.open(encodedUrl, '_blank')
         } else if (urlScheme.startsWith('happ') && isCryptoLinkEnabled) {
-            // return os === 'windows' || os === 'linux' || os === 'macos'
-            return window.open(`${redirectLink}${user.happ.cryptoLink}`, '_blank')
-            // : window.open(user.happ.cryptoLink, '_blank')
+            return redirectUrl
+                ? window.open(`${redirectUrl}${user.happ.cryptoLink}`, '_blank')
+                : window.open(user.happ.cryptoLink, '_blank')
         } else {
-            // return os === 'windows' || os === 'linux' || os === 'macos'
-            return window.open(`${redirectLink}${urlScheme}${subscriptionUrl}`, '_blank')
-            // : window.open(`${urlScheme}${subscriptionUrl}`)
+            return redirectUrl
+                ? window.open(`${redirectUrl}${urlScheme}${subscriptionUrl}`, '_blank')
+                : window.open(`${urlScheme}${subscriptionUrl}`, '_blank')
         }
     }
 
