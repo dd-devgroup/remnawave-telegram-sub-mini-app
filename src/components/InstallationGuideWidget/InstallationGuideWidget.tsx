@@ -195,7 +195,7 @@ export const InstallationGuideWidget = ({
                                 key={index}
                                 leftSection={<IconExternalLink size={16} />}
                                 target="_blank"
-                                variant="outline"
+                                color="sunset.1"
                                 style={{
                                     padding: '8px 12px',
                                     height: 'auto',

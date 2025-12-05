@@ -1,27 +1,21 @@
-import { Center, Progress, Stack, Text } from '@mantine/core'
-
+import { Center, Stack, Text } from '@mantine/core'
+import catLoading from '@public/assets/anamations/loading.json'
+import Lottie from 'lottie-react'
 export function Loading({
-                                  height = '100vh',
-                                  text = undefined,
-                                  value = 100
-                              }: {
+    height = '100vh',
+    text = undefined,
+    value = 100
+}: {
     height?: string
     text?: string
     value?: number
 }) {
     return (
         <Center h={height}>
-            <Stack align="center" gap="xs" w="100%">
+            <Stack align="center" gap="xs" w="40%">
                 {text && <Text size="lg">{text}</Text>}
-                <Progress
-                    animated
-                    color="cyan"
-                    maw="32rem"
-                    radius="xs"
-                    striped
-                    value={value}
-                    w="80%"
-                />
+
+                <Lottie animationData={catLoading} loop={true} />
             </Stack>
         </Center>
     )
