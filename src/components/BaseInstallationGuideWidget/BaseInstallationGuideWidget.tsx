@@ -2,7 +2,7 @@ import { IAppConfig, ILocalizedText, TEnabledLocales, TPlatform } from '@/types/
 import { IPlatformGuideProps } from '@/types/platforGuide'
 import { Accordion, Box, Button, Group, Text, ThemeIcon, Timeline, rem } from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks'
-import noDataAnimate from '@public/assets/anamations/no-data-config.json'
+import noDataAnimate from '@public/assets/anamations/error-connect.json'
 import {
     IconCheck,
     IconCloudDownload,
