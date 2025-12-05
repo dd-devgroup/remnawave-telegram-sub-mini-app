@@ -111,7 +111,7 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
                             return (
                                 <Button
                                     key={app.id}
-                                    color="dark"
+                                    color={isActive ? 'sunset.5' : 'sunset.1'}
                                     leftSection={
                                         appIcons[app.id] ? (
                                             <Box
@@ -137,7 +137,6 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
                                         flex: '1 0 auto',
                                         width: isSmallScreen ? '100%' : 'auto'
                                     }}
-                                    variant={isActive ? 'light' : 'outline'}
                                 >
                                     {app.name}
                                 </Button>
@@ -195,8 +194,7 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
                                                         )
                                                     }
                                                     onClick={() => handleTabChange(app.id)}
-                                                    variant={isActive ? 'light' : 'outline'}
-                                                    color="dark"
+                                                    color={isActive ? 'sunset.5' : 'sunset.1'}
                                                     style={{
                                                         padding: '8px 12px',
                                                         height: 'auto',
@@ -259,7 +257,6 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
                                             href={button.buttonLink}
                                             key={index}
                                             target="_blank"
-                                            color="sunset"
                                         >
                                             {getButtonText(button)}
                                         </Button>
